@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile App Signup Flow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #13172a 0%, #3a284c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .phone-container {
+            width: 375px;
+            height: 812px;
+            background: #1b1212;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #d3b3b3;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: linear-gradient(135deg, #27e2c9, #484571);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: rgb(34, 147, 151);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 0 24px;
+            height: calc(100% - 44px);
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .step {
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #e0e6ed;
+            border-radius: 2px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6c5ce7, #a29bfe);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .logo {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            border-radius: 20px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+
+        .app-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+
+        .tagline {
+            font-size: 16px;
+            color: #636e72;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2d3436;
+            margin: 40px 0 12px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #636e72;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e0e6ed;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #ffffff;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #6c5ce7;
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+        }
+
+        input.error {
+            border-color: #cf806c;
+            background: #ffeaa7;
+        }
+
+        .error-message {
+            color: #e17055;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 32px 0 16px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e6ed;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .social-btn:hover {
+            border-color: #6c5ce7;
+            background: #f8f9fa;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            position: relative;
+            color: #636e72;
+            font-size: 14px;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e0e6ed;
+            z-index: 1;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e0e6ed;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .checkbox.checked {
+            background: #6c5ce7;
+            border-color: #6c5ce7;
+            color: white;
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            color: #636e72;
+            line-height: 1.4;
+            cursor: pointer;
+        }
+
+        .checkbox-label a {
+            color: #6c5ce7;
+            text-decoration: none;
+        }
+
+        .interests-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .interest-tag {
+            padding: 16px 12px;
+            border: 2px solid #e0e6ed;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .interest-tag.selected {
+            background: #6c5ce7;
+            border-color: #6c5ce7;
+            color: white;
+        }
+
+        .success-animation {
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        .checkmark {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            margin: 0 auto 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .skip-btn {
+            background: none;
+            border: none;
+            color: #636e72;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 16px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 24px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #2d3436;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: #f8f9fa;
+        }
+
+        @media (max-width: 400px) {
+            .phone-container {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+                padding: 0;
+            }
+            
+            .screen {
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="screen">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>SignUp </span>
+                <span>100%</span>
+            </div>
+            
+            <div class="content">
+                <button class="back-btn" onclick="goBack()" style="display: none;">←</button>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 16.67%;"></div>
+                </div>
+
+                <!-- Step 1: Welcome -->
+                <div class="step active" id="step1">
+                    <div class="logo">
+                        <div class="logo-icon">✨</div>
+                        <div class="app-name">S.M</div>
+                        <div class="tagline">Connect & Discover</div>
+                    </div>
+                    
+                    <h1>Welcome to myWorld</h1>
+                    <p class="subtitle">Join thousands of users connecting and discovering amazing content every day.</p>
+                    
+                    <div class="social-login">
+                        <div class="social-btn" onclick="socialLogin('google')">🔍</div>
+                        <div class="social-btn" onclick="socialLogin('apple')">🍎</div>
+                        <div class="social-btn" onclick="socialLogin('facebook')">📘</div>
+                    </div>
+                    
+                    <div class="divider">
+                        <span>or continue with email</span>
+                    </div>
+                    
+                    <button class="btn" onclick="nextStep()">Get Started</button>
+                    
+                    <div style="text-align: center; margin-top: 24px;">
+                        <span style="color: #636e72; font-size: 14px;">Already have an account? </span>
+                        <a href="#" style="color: #6c5ce7; text-decoration: none; font-weight: 600;">Sign In</a>
+                    </div>
+                </div>
+
+                <!-- Step 2: Email -->
+                <div class="step" id="step2">
+                    <h1>What's your email?</h1>
+                    <p class="subtitle">We'll use this to send you important updates and notifications.</p>
+                    
+                    <form onsubmit="validateEmail(event)">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" placeholder="Enter your email address" required>
+                            <div class="error-message" id="emailError">Please enter a valid email address</div>
+                        </div>
+                        
+                        <button type="submit" class="btn">Continue</button>
+                    </form>
+                </div>
+
+                <!-- Step 3: Password -->
+                <div class="step" id="step3">
+                    <h1>Create password</h1>
+                    <p class="subtitle">Choose a strong password to keep your account secure.</p>
+                    
+                    <form onsubmit="validatePassword(event)">
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" placeholder="Create a strong password" required>
+                            <div class="error-message" id="passwordError">Password must be at least 8 characters long</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                            <div class="error-message" id="confirmPasswordError">Passwords don't match</div>
+                        </div>
+                        
+                        <button type="submit" class="btn">Continue</button>
+                    </form>
+                </div>
+
+                <!-- Step 4: Personal Info -->
+                <div class="step" id="step4">
+                    <h1>Tell us about yourself</h1>
+                    <p class="subtitle">This helps us personalize your experience and connect you with relevant content.</p>
+                    
+                    <form onsubmit="validatePersonalInfo(event)">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" placeholder="Enter your first name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" placeholder="Enter your last name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="birthDate">Date of Birth</label>
+                            <input type="date" id="birthDate" required>
+                        </div>
+                        
+                        <button type="submit" class="btn">Continue</button>
+                    </form>
+                </div>
+
+                <!-- Step 5: Location -->
+                <div class="step" id="step5">
+                    <h1>Where are you located?</h1>
+                    <p class="subtitle">We'll show you content and events happening near you.</p>
+                    
+                    <form onsubmit="validateLocation(event)">
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <select id="country" required>
+                                <option value="">Select your country</option>
+                                <option value="us">United States</option>
+                                <option value="uk">United Kingdom</option>
+                                <option value="ca">Canada</option>
+                                <option value="au">Australia</option>
+                                <option value="de">Germany</option>
+                                <option value="fr">France</option>
+                                <option value="in">India</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" placeholder="Enter your city" required>
+                        </div>
+                        
+                        <button type="submit" class="btn">Continue</button>
+                        <button type="button" class="skip-btn" onclick="nextStep()">Skip for now</button>
+                    </form>
+                </div>
+
+                <!-- Step 6: Interests -->
+                <div class="step" id="step6">
+                    <h1>What interests you?</h1>
+                    <p class="subtitle">Select topics you'd like to see content about. You can change these later.</p>
+                    
+                    <div class="interests-grid">
+                        <div class="interest-tag" onclick="toggleInterest(this)">🎨 Art & Design</div>
+                        <div class="interest-tag" onclick="toggleInterest(this)">💻 Technology</div>
+                        <div class="interest-tag" onclick="toggleInterest(this)">🍳 Cooking</div>
+                        <div class="interest-tag" onclick="toggleInterest(this)">🏃‍♂️ Fitness</div>
+                        <div class="interest-tag" onclick="toggleInterest(this)">🎵 Music</div>
+                        <div class="interest-tag" onclick="toggleInterest(this)">📚 Reading</div>
+                        <div class="interest-tag" onclick="toggleInterest(this)">✈️ Travel</div>
+                        <div class="interest-tag" onclick="toggleInterest(this)">🎮 Gaming</div>
+                    </div>
+                    
+                    <button class="btn" onclick="nextStep()">Continue</button>
+                    <button type="button" class="skip-btn" onclick="nextStep()">Skip for now</button>
+                </div>
+
+                <!-- Step 7: Terms & Privacy -->
+                <div class="step" id="step7">
+                    <h1>Terms & Privacy</h1>
+                    <p class="subtitle">Please review and accept our terms to complete your signup.</p>
+                    
+                    <form onsubmit="completeSignup(event)">
+                        <div class="checkbox-group">
+                            <div class="checkbox" id="termsCheckbox" onclick="toggleCheckbox('terms')"></div>
+                            <label class="checkbox-label" onclick="toggleCheckbox('terms')">
+                                I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                            </label>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <div class="checkbox" id="marketingCheckbox" onclick="toggleCheckbox('marketing')"></div>
+                            <label class="checkbox-label" onclick="toggleCheckbox('marketing')">
+                                I'd like to receive updates and promotional emails
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn" id="completeBtn" disabled>Complete Signup</button>
+                    </form>
+                </div>
+
+                <!-- Step 8: Success -->
+                <div class="step" id="step8">
+                    <div class="success-animation">
+                        <div class="checkmark">✓</div>
+                        <h1>Welcome aboard!</h1>
+                        <p class="subtitle">Your account has been created successfully. Let's start exploring Nexus together!</p>
+                        
+                        <button class="btn" onclick="finishSignup()">Start Exploring</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 8;
+        let userData = {};
+        let selectedInterests = [];
+        let acceptedTerms = false;
+        let acceptedMarketing = false;
+
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            
+            const backBtn = document.querySelector('.back-btn');
+            if (step > 1 && step < 8) {
+                backBtn.style.display = 'block';
+            } else {
+                backBtn.style.display = 'none';
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+                updateProgress();
+            }
+        }
+
+        function goBack() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+                updateProgress();
+            }
+        }
+
+        function socialLogin(provider) {
+            // Simulate social login
+            alert(`Redirecting to ${provider} login...`);
+            // In a real app, this would handle OAuth flow
+        }
+
+        function validateEmail(e) {
+            e.preventDefault();
+            const email = document.getElementById('email');
+            const emailError = document.getElementById('emailError');
+            
+            if (email.value && email.checkValidity()) {
+                userData.email = email.value;
+                nextStep();
+            } else {
+                email.classList.add('error');
+                emailError.classList.add('show');
+                setTimeout(() => {
+                    email.classList.remove('error');
+                    emailError.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        function validatePassword(e) {
+            e.preventDefault();
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            const passwordError = document.getElementById('passwordError');
+            const confirmPasswordError = document.getElementById('confirmPasswordError');
+            
+            let valid = true;
+            
+            if (password.value.length < 8) {
+                password.classList.add('error');
+                passwordError.classList.add('show');
+                valid = false;
+            }
+            
+            if (password.value !== confirmPassword.value) {
+                confirmPassword.classList.add('error');
+                confirmPasswordError.classList.add('show');
+                valid = false;
+            }
+            
+            if (valid) {
+                userData.password = password.value;
+                nextStep();
+            } else {
+                setTimeout(() => {
+                    password.classList.remove('error');
+                    confirmPassword.classList.remove('error');
+                    passwordError.classList.remove('show');
+                    confirmPasswordError.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        function validatePersonalInfo(e) {
+            e.preventDefault();
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const birthDate = document.getElementById('birthDate').value;
+            
+            if (firstName && lastName && birthDate) {
+                userData.firstName = firstName;
+                userData.lastName = lastName;
+                userData.birthDate = birthDate;
+                nextStep();
+            }
+        }
+
+        function validateLocation(e) {
+            e.preventDefault();
+            const country = document.getElementById('country').value;
+            const city = document.getElementById('city').value;
+            
+            if (country && city) {
+                userData.country = country;
+                userData.city = city;
+                nextStep();
+            }
+        }
+
+        function toggleInterest(element) {
+            element.classList.toggle('selected');
+            const interest = element.textContent;
+            
+            if (element.classList.contains('selected')) {
+                selectedInterests.push(interest);
+            } else {
+                selectedInterests = selectedInterests.filter(i => i !== interest);
+            }
+        }
+
+        function toggleCheckbox(type) {
+            const checkbox = document.getElementById(type + 'Checkbox');
+            const completeBtn = document.getElementById('completeBtn');
+            
+            if (type === 'terms') {
+                acceptedTerms = !acceptedTerms;
+                if (acceptedTerms) {
+                    checkbox.classList.add('checked');
+                    checkbox.innerHTML = '✓';
+                } else {
+                    checkbox.classList.remove('checked');
+                    checkbox.innerHTML = '';
+                }
+            } else if (type === 'marketing') {
+                acceptedMarketing = !acceptedMarketing;
+                if (acceptedMarketing) {
+                    checkbox.classList.add('checked');
+                    checkbox.innerHTML = '✓';
+                } else {
+                    checkbox.classList.remove('checked');
+                    checkbox.innerHTML = '';
+                }
+            }
+            
+            completeBtn.disabled = !acceptedTerms;
+        }
+
+        function completeSignup(e) {
+            e.preventDefault();
+            if (acceptedTerms) {
+                userData.interests = selectedInterests;
+                userData.acceptedMarketing = acceptedMarketing;
+                console.log('User data collected:', userData);
+                nextStep();
+            }
+        }
+
+        function finishSignup() {
+            alert('Signup complete! In a real app, you would now be taken to the main app interface.');
+        }
+
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>
